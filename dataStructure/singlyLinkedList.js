@@ -118,5 +118,3 @@ class LinkedList {
     return !this._length;
   }
 }
-
-let singlyLinkedList = new LinkedList();
