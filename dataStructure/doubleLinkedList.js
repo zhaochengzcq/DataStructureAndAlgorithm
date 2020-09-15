@@ -5,18 +5,22 @@ class Node {
     this.next = null;
   }
 }
-/**
- *
- */
 class doubleLinkedList {
   #length;
   #head;
   #tail;
-  constructor() {
+  constructor(...vals) {
     this.#head = null;
     this.#tail = null;
     this.#length = 0;
+    if (vals) {
+      this.add(...vals);
+    }
   }
+  /**
+   *add values to double linked list
+   * @param  {...any} vals  - values to double linked list
+   */
   add(...vals) {
     for (let val of vals) {
       let node = new Node(val);
@@ -30,14 +34,19 @@ class doubleLinkedList {
         this.#length++;
       }
     }
+    return this;
   }
+  /**
+   * insert values at the position in double linked list
+   * @param {*} position - position at double linked list
+   * @param  {...any} vals - values
+   */
   insertAt(position, ...vals) {
     //方法二 先建立子链表，再插入到指定位置
     if (position < 0 || position > this.#length) {
       return "this position is not existent";
     }
-    let d = new doubleLinkedList();
-    d.add(...vals);
+    let d = new doubleLinkedList(...vals);
     let childHead = d.getHead();
     let childTail = d.getTail();
     let size = d.size();
@@ -96,10 +105,14 @@ class doubleLinkedList {
     //   return 0;
     // }
   }
+  /**
+   * remove a vlaue from double linked list
+   * @param {*} val - value while be removed
+   */
   remove(val) {
     let current = this.#head;
-    let next = current.next;
-    let pre = current.previous;
+    let next = current ? current.next : null;
+    let pre = current ? current.previous : null;
     let count = 0;
     while (current) {
       if (current.value === val) {
@@ -126,24 +139,53 @@ class doubleLinkedList {
       count++;
     }
   }
+  /**
+   * traverse the double linked list
+   * @param {function} callback - node while be passed to callback function
+   * @param {number} position - traverse while begin at this position
+   */
   traverse(callback, position = 0) {
     let current = this.#head;
     let count = 0;
     while (current) {
       if (count >= position) {
-        callback(current.value);
+        callback(current);
       }
       current = current.next;
       count++;
     }
   }
-  indexOf() {}
+  /**
+   * is the value in the list
+   * @param {*} val - vlaue
+   */
+  indexOf(val) {
+    let count = 0;
+    let current = this.#head;
+    while (count < this.#length) {
+      if (current.value === val) {
+        return [current, count];
+      }
+      current = current.next;
+      count++;
+    }
+    return -1;
+  }
+  /**
+   * get the head node
+   */
   getHead() {
     return this.#head;
   }
+  /**
+   * get the tail node
+   */
   getTail() {
     return this.#tail;
   }
+  /**
+   * get the length of list
+   */
   size() {
     return this.#length;
   }
