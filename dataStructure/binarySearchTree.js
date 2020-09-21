@@ -8,8 +8,11 @@ class Node {
 }
 class BinarySearchTree {
   #root;
-  constructor() {
+  #high;
+  constructor(...vals) {
     this.#root = null;
+    this.#high = 0;
+    this.insert(...vals);
   }
   addToList(head, node) {
     let current = head;
@@ -42,11 +45,12 @@ class BinarySearchTree {
       }
       this.insertRecursion(this.#root, newNode);
     }
+    this.getHighRecursion(this.#root, 0);
   }
-  removeSup(index, nodeArr) {
+  removeRecursion(index, nodeArr) {
     if (nodeArr[index].left !== null && nodeArr[index].right !== null) {
       nodeArr[index].value = nodeArr[+index + 1].value;
-      this.removeSup(+index + 1, nodeArr);
+      this.removeRecursion(+index + 1, nodeArr);
       return 0;
     }
     if (nodeArr[index].left !== null || nodeArr[index].right !== null) {
@@ -57,11 +61,13 @@ class BinarySearchTree {
       nodeArr[index].value = current.value;
       nodeArr[index].left = current.left;
       nodeArr[index].right = current.right;
+      this.getHighRecursion(this.#root, 0);
       return 0;
     }
-    nodeArr[+index - 1].right === nodeArr[index]
+    nodeArr[+index - 1] && nodeArr[+index - 1].right === nodeArr[index]
       ? (nodeArr[+index - 1].right = null)
       : (nodeArr[+index + 1].left = null);
+    this.getHighRecursion(this.#root, 0);
     return 0;
   }
   remove(val) {
@@ -70,11 +76,13 @@ class BinarySearchTree {
       nodeArr.push(node);
     });
     if (nodeArr.length === 1 && nodeArr[0].value === val) {
+      this.getHighRecursion(this.#root, 0);
       this.#root = null;
+      return;
     }
     for (let index in nodeArr) {
       if (nodeArr[index].value === val) {
-        return this.removeSup(index, nodeArr);
+        return this.removeRecursion(index, nodeArr);
       }
     }
   }
@@ -117,31 +125,23 @@ class BinarySearchTree {
   isEmpty() {
     return !this.#root;
   }
-  gerRoot() {
+  getHighRecursion(node, i) {
+    if (!i) {
+      this.#high = 0;
+    }
+    if (node === null) {
+      this.#high < i ? (this.#high = i) : this.#high;
+      return i;
+    }
+    i++;
+    this.getHighRecursion(node.left, i);
+    this.getHighRecursion(node.right, i);
+  }
+  getHigh() {
+    this.getHighRecursion(this.#root, 0);
+    return this.#high;
+  }
+  getRoot() {
     return this.#root;
   }
 }
-let b = new BinarySearchTree();
-b.insert(
-  80,
-  72,
-  35,
-  99,
-  84,
-  17,
-  86,
-  99,
-  102,
-  13,
-  71,
-  56,
-  48,
-  23,
-  55,
-  66,
-  66,
-  117,
-  22,
-  15,
-  1
-);
