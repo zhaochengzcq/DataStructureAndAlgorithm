@@ -1,3 +1,11 @@
+/**
+ * binary search tree
+ * -insert
+ * -remove
+ * -search
+ * -traverse
+ * -getHigh
+ */
 class Node {
   constructor(val) {
     this.value = val;
@@ -14,6 +22,11 @@ class BinarySearchTree {
     this.#high = 0;
     this.insert(...vals);
   }
+  /**
+   * add the node to list which have a same value with list members
+   * @param {Node} head - the head node in list
+   * @param {Node} node - while be added to the list
+   */
   addToList(head, node) {
     let current = head;
     while (current.sameAttributesVal) {
@@ -21,6 +34,11 @@ class BinarySearchTree {
     }
     current.sameAttributesVal = node;
   }
+  /**
+   * insert recursion function
+   * @param {Node} oldNode - node in the tree
+   * @param {Node} newNode - node while be added
+   */
   insertRecursion(oldNode, newNode) {
     if (oldNode.value === newNode.value) {
       this.addToList(oldNode, newNode);
@@ -36,6 +54,11 @@ class BinarySearchTree {
         : (oldNode.right = newNode);
     }
   }
+  /**
+   * -create a binary-search-tree
+   * -add values to binary-search-tree
+   * @param  {...Number} vals
+   */
   insert(...vals) {
     for (let val of vals) {
       let newNode = new Node(val);
@@ -109,7 +132,7 @@ class BinarySearchTree {
    * =>in-order
    * **pos-order
    * @param {Node} node
-   * @param {Function} callback
+   * @param {Function} callback -callback function
    */
   traverseRecursion(node, callback) {
     if (node === null) {
