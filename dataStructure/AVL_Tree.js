@@ -17,7 +17,12 @@ class AVL_Tree {
       this.#root = new Node(newVal);
     }
   }
-  insert() {}
+  insert(...values) {
+    for (let value of values) {
+      let newNode = new Node(value);
+      this.insertRecursion(this.#root, newNode);
+    }
+  }
   remove() {}
   traverse() {}
   serach() {}
