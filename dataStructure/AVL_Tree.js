@@ -3,6 +3,7 @@ class Node {
     this.value = value;
     this.left = null;
     this.right = null;
+    this.next = null;
   }
 }
 class AVL_Tree {
@@ -12,18 +13,45 @@ class AVL_Tree {
     this.#root = null;
     this.#high = 0;
   }
-  insertRecursion(newValz) {
+  // //单链表插入，遍历，删除
+  // sameNodeInset(newNode, oldNode) {
+  //   oldNode.next = newNode;
+  //   return;
+  // }
+  //节点插入回调
+  insertRecursion(newNode, oldNode = this.#root) {
     if (this.#root === null) {
-      this.#root = new Node(newVal);
+      this.#root = newNode;
+      return;
+    }
+    if (newNode.value < oldNode.value) {
+      oldNode.left !== null
+        ? this.insertRecursion(newNode, oldNode.left)
+        : () => {
+            oldNode.left = newNode;
+            return;
+          };
+    }
+    if (newNode.value > oldNode.value) {
+      oldNode.right !== null
+        ? this.insertRecursion(newNode, oldNode.right)
+        : () => {
+            oldNode.right = newNode;
+            return;
+          };
+    }
+    if (newNode.value === oldNode.value) {
+      oldNode.next = newNode;
     }
   }
   insert(...values) {
     for (let value of values) {
       let newNode = new Node(value);
-      this.insertRecursion(this.#root, newNode);
+      this.insertRecursion(newNode);
     }
   }
-  remove() {}
+  remove(value) {}
+  traverseRecursion() {}
   traverse() {}
   serach() {}
   getHigh() {}
