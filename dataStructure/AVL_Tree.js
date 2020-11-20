@@ -5,9 +5,11 @@ class Node {
     this.right = null;
     this.next = null;
     this.bf = null;
-    this.maxHeight = null;
+    this.maxHeight = 0;
   }
 }
+
+//待解决 获取深度/层数
 class AVL_Tree {
   #root;
   #height;
@@ -16,7 +18,7 @@ class AVL_Tree {
     this.#height = 0;
     this.insert(...values);
   }
-  //旋转
+
   //节点插入回调
   insertRecursion(newNode, oldNode = this.#root) {
     if (this.#root === null) {
@@ -44,8 +46,9 @@ class AVL_Tree {
     for (let value of values) {
       let newNode = new Node(value);
       this.insertRecursion(newNode);
+      this.getBF();
     }
-    this.getNodeHeight();
+    // this.getNodeHeight();s
   }
   removeRecursion(arr, index) {
     if (arr[index].left === null && arr[index].right === null) {
@@ -117,9 +120,12 @@ class AVL_Tree {
     this.hasVal(value, node.right);
     return false;
   }
-  getHeigntRecursion(node = this.#root, height = 0, startNode = node) {
+  getHeigntRecursion(node = this.#root, height = -1, startNode = node) {
     if (node === null) {
       return;
+    }
+    if (startNode === node) {
+      startNode.maxHeight = 0;
     }
     height++;
     node.left === null
@@ -133,6 +139,7 @@ class AVL_Tree {
         : startNode.maxHeight
       : this.getHeigntRecursion(node.right, height, startNode);
   }
+  //获取节点的高度
   getNodeHeight(node = this.#root) {
     this.getHeigntRecursion(node);
     if (node === this.#root) {
@@ -140,10 +147,56 @@ class AVL_Tree {
     }
     return node.maxHeight;
   }
+  //获取树的高度
   getTreeHeignt() {
     return this.#height;
   }
-  // 判断发生旋转的部分在根的左子树还是右子树
+  //旋转
+  simpleRotation(root, pivot) {
+    let changeVal = null;
+    if (root.left === pivot) {
+      changeVal = root.value;
+      root.value = pivot.value;
+      root.left = pivot.left;
+      pivot.value = changeVal;
+      pivot.left = pivot.right;
+      pivot.right = root.right;
+      root.right = pivot;
+    } else if (root.right === pivot) {
+      changeVal = root.value;
+      root.value = pivot.value;
+      root.right = pivot.right;
+      pivot.value = changeVal;
+      pivot.right = pivot.left;
+      pivot.left = root.left;
+      root.left = pivot;
+    }
+  }
+  doubleRotation(root, pivot) {
+    if (root.left === pivot) {
+      this.simpleRotation(pivot, pivot.right);
+      this.simpleRotation(root, pivot);
+    } else if (root.right === pivot) {
+      this.simpleRotation(pivot, pivot.left);
+      this.simpleRotation(root, pivot);
+    }
+  }
+  reBalance(node) {
+    let nodeLeft = node.left;
+    let nodeRight = node.right;
+    if (node.bf > 0 && nodeLeft && nodeLeft.bf > 0) {
+      this.simpleRotation(node, nodeLeft);
+    } else if (node.bf < 0 && nodeRight && nodeRight.bf < 0) {
+      this.simpleRotation(node, nodeRight);
+    } else if (node.bf > 0 && nodeLeft && nodeLeft.bf < 0) {
+      this.doubleRotation(node, nodeLeft);
+    } else if (node.bf < 0 && nodeRight && nodeRight.bf > 0) {
+      this.doubleRotation(node, nodeRight);
+    }
+    console.log(node);
+    this.getBF(node);
+  }
+  //获取平衡因子
   getBF(node = this.#root) {
     if (node.left !== null) {
       this.getBF(node.left);
@@ -152,9 +205,13 @@ class AVL_Tree {
       this.getBF(node.right);
     }
     this.getNodeHeight(node);
-    node.bf = Math.abs(
-      (node.left && node.left.maxHeight) - (node.right && node.right.maxHeight)
-    );
+    node.bf =
+      (node.left && node.left.maxHeight + 1) -
+      (node.right && node.right.maxHeight + 1);
+
+    if (Math.abs(node.bf) > 1) {
+      this.reBalance(node);
+    }
     return;
   }
   getRoot() {
@@ -167,33 +224,22 @@ class AVL_Tree {
 
 let avlTree = new AVL_Tree(
   50,
-  1,
-  89,
+  60,
+  55,
+  40,
+  4,
   45,
-  16,
-  42,
-  33,
-  78,
-  65,
-  12,
-  10,
-  33,
-  33,
-  65,
+  46,
+  47,
   99,
-  100
+  8,
+  87,
+  13,
+  49,
+  98
 );
 let str = "";
 avlTree.traversal((node) => {
   str = str + node.value + ",";
 });
 console.log(str);
-
-//                 50
-//          1
-//             45
-//           16
-//         12
-//       10
-
-// function getBF() {}
